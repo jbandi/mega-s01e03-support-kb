@@ -1,0 +1,52 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: Jonas Bandi
+status: draft
+reviewed: 2026-10-28
+signature: Jonas Bandi
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one bug, one fix queued. Its reports say otherwise.
+Read by tenant, channel and body, they describe three problems with three different fixes. The
+queued parser fix closes only one of them.
+
+<Callout kind="warn">
+Do not close #4471's reports when the parser fix ships. The <code>hint</code> and
+<code>one-day</code> reports below will keep coming.
+</Callout>
+
+## The split
+
+<ProblemTable ticket={4471} issues={{}} />
+
+## How each report was placed
+
+1. **One report per id.** The export repeats some reports across its pages; each id counts once.
+2. **`one-day`** — the body says the booking moved by one day, not that day and month swapped:
+   "Invite says Tuesday 12 May. Calendar says Monday 11 May" (R-41202), "Client in Lisbon got
+   Tuesday. Client in Toronto got Monday" (R-41344), "The invite arrived before I made the
+   booking" (R-41236). A day/month flip cannot do that. The desk already lists these in
+   `desk-notes.json`; the #4471 page files them under `parser` as a footnote.
+3. **`hint`** — a day-first tenant on `booking-v3`, reporting through the form. That form prints
+   `MM/DD/YYYY` under its date field, people type month first as told, and the form reads the
+   tenant's way. The parser fix does not touch it.
+4. **`parser`** — every other report from a day-first tenant: app, email, and forms that print
+   `DD/MM/YYYY`. This is the bug #4471 is named for.
+
+The intake tag (`meta.intakeTag`) is not used. It is guessed from the reporter's browser, and it
+disagrees with the tenant's locale and form often (see the tag column on [#4471](/kb/incidents/4471)).
+
+## Why they were merged
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject line alone. All three
+problems produce the same subjects ("Wrong day on the invite", "Date is wrong"), so all three
+landed in #4471 and inherited its "known" status.
+
+<RenderStamp {signature} />
