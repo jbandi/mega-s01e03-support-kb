@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · three problems, not one'
 owner: Jonas Bandi
-status: draft
+status: open
 reviewed: 2026-10-28
 signature: Jonas Bandi
 ---
@@ -13,44 +13,55 @@ signature: Jonas Bandi
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
-[#4471](/kb/incidents/4471) is marked known: one bug, one fix queued. Its reports say otherwise.
-Read by tenant, channel and body, they describe three problems with three different fixes. The
-queued parser fix closes only one of them.
+[#4471](/kb/incidents/4471) was marked known: one bug, one fix queued. Its reports describe three
+problems. Engineering closed #4471 on 5 October with an answer for two of them. The third is
+still open.
 
 <Callout kind="warn">
-Do not close #4471's reports when the parser fix ships. The <code>hint</code> and
-<code>one-day</code> reports below will keep coming.
+The <code>one-day</code> reports are not covered by the parser fix or by retiring booking-v3.
+Keep them out of any "fixed" reply, and route new one-day reports to its ticket, not to #4471.
 </Callout>
 
 ## The split
 
-<ProblemTable ticket={4471} issues={{
-    parser: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/1',
-    hint: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/2',
-    'one-day': 'https://github.com/jbandi/mega-s01e03-support-kb/issues/3',
-  }} />
+<ProblemTable
+  ticket={4471}
+  tickets={{
+    parser: { url: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/1', state: 'closed · fixed' },
+    hint: { url: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/2', state: "closed · won't fix" },
+    'one-day': { url: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/3', state: 'open' },
+  }}
+/>
+
+## What engineering did
+
+- **`parser` — fixed.** `fix(dates): parse dd/mm for eu locales`. Reports from day-first tenants
+  through app, email and `DD/MM/YYYY` forms should stop.
+- **`hint` — won't fix.** The booking-v3 form is retired, so its `MM/DD/YYYY` hint goes with it.
+  Tenants still on booking-v3 need to move off it.
+- **`one-day` — nothing yet.** The booking lands one day early: "Invite says Tuesday 12 May.
+  Calendar says Monday 11 May" (R-41202), "Client in Lisbon got Tuesday. Client in Toronto got
+  Monday" (R-41344), "The invite arrived before I made the booking" (R-41236). A day/month flip
+  cannot do that, so the parser fix does not close it. The latest came in on 4 October (R-41620).
 
 ## How each report was placed
 
 1. **One report per id.** The export repeats some reports across its pages; each id counts once.
-2. **`one-day`** — the body says the booking moved by one day, not that day and month swapped:
-   "Invite says Tuesday 12 May. Calendar says Monday 11 May" (R-41202), "Client in Lisbon got
-   Tuesday. Client in Toronto got Monday" (R-41344), "The invite arrived before I made the
-   booking" (R-41236). A day/month flip cannot do that. The desk already lists these in
-   `desk-notes.json`; the #4471 page files them under `parser` as a footnote.
-3. **`hint`** — a day-first tenant on `booking-v3`, reporting through the form. That form prints
-   `MM/DD/YYYY` under its date field, people type month first as told, and the form reads the
-   tenant's way. The parser fix does not touch it.
-4. **`parser`** — every other report from a day-first tenant: app, email, and forms that print
-   `DD/MM/YYYY`. This is the bug #4471 is named for.
+2. **`hint`** — a day-first tenant on `booking-v3`, reporting through the form. That form prints
+   `MM/DD/YYYY` under its date field, people type month first as told, and the form reads it the
+   tenant's way.
+3. **`parser`** — every other report from a day-first tenant. This is the desk's own count
+   (`causes.ts`), the same as the table on #4471.
+4. **`one-day`** — the reports the desk itself lists in `desk-notes.json` as a one-day move. The
+   desk counts them under `parser`, where they are filed; they are also a problem of their own.
 
-The intake tag (`meta.intakeTag`) is not used. It is guessed from the reporter's browser, and it
-disagrees with the tenant's locale and form often (see the tag column on [#4471](/kb/incidents/4471)).
+The intake tag (`meta.intakeTag`) is not used. It is guessed from the reporter's browser and often
+disagrees with the tenant's locale and form (see the tag column on [#4471](/kb/incidents/4471)).
 
 ## Why they were merged
 
 [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject line alone. All three
 problems produce the same subjects ("Wrong day on the invite", "Date is wrong"), so all three
-landed in #4471 and inherited its "known" status.
+landed in #4471 and inherited its "known" status, and then its close.
 
 <RenderStamp {signature} />
