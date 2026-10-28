@@ -24,7 +24,11 @@ Do not close #4471's reports when the parser fix ships. The <code>hint</code> an
 
 ## The split
 
-<ProblemTable ticket={4471} issues={{}} />
+<ProblemTable ticket={4471} issues={{
+    parser: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/1',
+    hint: 'https://github.com/jbandi/mega-s01e03-support-kb/issues/2',
+    'one-day': 'https://github.com/jbandi/mega-s01e03-support-kb/issues/3',
+  }} />
 
 ## How each report was placed
 
