@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: Jonas Bandi
 status: open
 reviewed: 2026-10-28
-signature: Jonas Bandi
+signature: v1.eyJzdWIiOiIyMTQ3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyMjExNzUsImV4cCI6MTc5MzMwNzU3NX0.lmTX_nrW1G06K5btYneARf7S22aHK3oe_5XUozGEFeo
 ---
 
 <script>
